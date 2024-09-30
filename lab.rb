@@ -7,6 +7,7 @@ v_amb=1
 v_elec=1
 v_r=0.25
 v_p=0
+v_nh=1
 live_loop :bateria do
   sample(ring, :bd_haus,:sn_zome).tick,amp:1*v_bat
   sleep 1
@@ -32,13 +33,26 @@ live_loop:ruido do
   with_synth :pnoise do
     play :d1, attack: 0.05, decay: 0.08, release: 0.1, amp:1*v_r,room: 0.6,damp: 0.4
   end
-  use_synth:dtri
+  use_synth:piano
   live_loop:piano do
     use_random_seed 114
     8.times do
-      play scale(64,:minor,num_octaves: 2).choose, amp:1*v_p
-      sleep 2
+      play scale(64,:minor,num_octaves: 1).tick, amp:1*v_p
+      sleep 1
     end
   end
+end
+live_loop:noise_hats do
+  sync:bateria
+  with_fx:slicer, mix: 1,phase: 0.25, pulse_width: 0.75,amp:1*v_nh do
+    with_fx:hpf, cutoff: 130 do
+      with_synth:noise do
+        play:d1, decay: 1
+      end
+    end
+  end
+  
+  
+  
   
 end
